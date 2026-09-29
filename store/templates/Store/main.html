@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Shop</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'store' %}">Store</a> |
+        <a href="{% url 'cart' %}">Cart</a> |
+        <a href="{% url 'checkout' %}">Checkout</a>
+    </nav>
+    <hr>
+
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
