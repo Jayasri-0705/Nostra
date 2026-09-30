@@ -1,0 +1,28 @@
+{% extends 'Store/main.html' %}
+
+{% block content %}
+
+<section class="detail">
+    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+    <div class="detail-info">
+        <p class="crumb">{{ product.category }}</p>
+        <h1>{{ product.name }}</h1>
+        <p class="price">₹{{ product.price }}</p>
+        <p>{{ product.description }}</p>
+        <button type="button" class="btn-dark">Add to cart</button>
+    </div>
+</section>
+
+{% if related %}
+    <h2 class="section-title">More in {{ product.category }}</h2>
+    <div class="product-grid">
+        {% for item in related %}
+            <a href="{% url 'product_detail' item.id %}" class="product-card">
+                <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                <p>{{ item.name }}</p>
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock content %}

@@ -1,17 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Shop</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Nostra{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav>
-        <a href="{% url 'store' %}">Store</a> |
-        <a href="{% url 'cart' %}">Cart</a> |
-        <a href="{% url 'checkout' %}">Checkout</a>
-    </nav>
-    <hr>
 
-    {% block content %}
-    {% endblock content %}
+    <header class="navbar">
+        <a href="{% url 'store' %}" class="logo">Nostra</a>
+        <nav>
+            <a href="{% url 'store' %}">Home</a>
+            <a href="{% url 'collections' %}">Collections</a>
+            <a href="{% url 'contact' %}">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="footer">
+        <h3>Nostra</h3>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+        <p>@2025 Nostra.com</p>
+    </footer>
+
 </body>
 </html>

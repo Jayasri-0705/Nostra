@@ -1,0 +1,24 @@
+{% extends 'Store/main.html' %}
+
+{% block content %}
+
+<form class="search-form" method="get">
+    <input type="text" name="q" placeholder="Search" value="{{ q }}">
+    <button type="submit">🔍</button>
+</form>
+
+{% for group in groups %}
+    <h2 class="category-title">{{ group.category.name }}</h2>
+    <div class="product-grid">
+        {% for product in group.products %}
+            <a href="{% url 'product_detail' product.id %}" class="product-card">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}">
+                <p>{{ product.name }}</p>
+            </a>
+        {% endfor %}
+    </div>
+{% empty %}
+    <p style="padding:20px 40px;">No products found.</p>
+{% endfor %}
+
+{% endblock content %}

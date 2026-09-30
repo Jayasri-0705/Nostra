@@ -1,19 +1,71 @@
 {% extends 'Store/main.html' %}
+{% load static %}
 
 {% block content %}
-    <h2>Welcome to the Store</h2>
 
-    {% for product in products %}
-        <div>
-           {% if product.image %}
-              <img src="{{ product.image.url }}" width="200">
-           {% endif %}
-            <h3>{{product.name}}</h3>
-            <p>{{product.description}}</p>
-            <p>Price: ₹{{ product.price }}</p>
-        </div>
-    {% empty %}
-        <p>No products yet.</p>
-    {% endfor %}         
-   
+<section class="hero-banner" style="background-image: url('PASTE-YOUR-IMAGE-LINK-HERE');">
+    <div class="hero-content">
+        <h1>Level Up Your Style</h1>
+        <p>with our gorgeous collection</p>
+        <a href="{% url 'collections' %}" class="btn-light">Shop now</a>
+    </div>
+</section>
+
+<div class="features-head">
+    <h2>We Provide Best<br>Customer Experience</h2>
+    <p>|| we ensure that our customer have the best shopping experience</p>
+</div>
+
+<div class="features">
+    <div class="feature">🆕<strong>New Arrival Everyday</strong>Fashion e-commerce is the online buying and selling of apparel, footwear and accessories.</div>
+    <div class="feature">🚚<strong>Fast and Free Shipping</strong>A high-growth sector focusing on visual merchandising and digital marketing.</div>
+    <div class="feature">✅<strong>Satisfaction Guarantee</strong>Personalized shopping experiences to drive sales.</div>
+</div>
+
+<h2 class="section-title">New Arrival</h2>
+
+{% for group in new_arrivals %}
+    <h3 class="sub-title">{{ group.label }}</h3>
+    <div class="product-grid six">
+        {% for category in group.categories %}
+            <a href="{% url 'category_detail' category.id %}" class="product-card">
+                <div class="img-box">
+                    <img src="{{ category.image_url }}" alt="{{ category.name }}">
+                    <span class="shop-btn">Shop now &rarr;</span>
+                </div>
+            </a>
+        {% empty %}
+            <p class="empty-note">No new arrivals yet.</p>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+</div>
+
+<h2 class="section-title">Most Wanted</h2>
+
+{% for group in most_wanted %}
+    <h3 class="sub-title">{{ group.label }}</h3>
+    <div class="product-grid six">
+        {% for category in group.categories %}
+            <a href="{% url 'category_detail' category.id %}" class="product-card">
+                <div class="img-box">
+                    <img src="{{ category.image_url }}" alt="{{ category.name }}">
+                    <span class="shop-btn">Shop now &rarr;</span>
+                </div>
+            </a>
+        {% empty %}
+            <p class="empty-note">No products yet.</p>
+        {% endfor %}
+    </div>
+{% endfor %}
+</div>
+
+<section class="newsletter">
+    <h2>Join Our News Letter</h2>
+    <p>Signup for our email newsletter to get exclusive discounts and updates and more</p>
+    <input type="email" placeholder="Enter your email">
+    <button type="button">Subscribe</button>
+</section>
+
 {% endblock content %}
