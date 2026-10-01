@@ -3,11 +3,12 @@
 
 {% block content %}
 
-<section class="hero-banner" style="background-image: url('PASTE-YOUR-IMAGE-LINK-HERE');">
+<section class="hero-banner" style="background-image: url('{% static 'store/images/hero_wide.jpg' %}');">
     <div class="hero-content">
-        <h1>Level Up Your Style</h1>
-        <p>with our gorgeous collection</p>
-        <a href="{% url 'collections' %}" class="btn-light">Shop now</a>
+        <p class="eyebrow">NEW SEASON, FRESH STYLES</p>
+        <h1>Level Up<span class="script">Your Style <span class="heart">&#9825;</span></span></h1>
+        <p class="tagline">with our gorgeous collection</p>
+        <a href="{% url 'collections' %}" class="btn-shop">SHOP NOW &rarr;</a>
     </div>
 </section>
 
@@ -40,8 +41,6 @@
     </div>
 {% endfor %}
 
-</div>
-
 <h2 class="section-title">Most Wanted</h2>
 
 {% for group in most_wanted %}
@@ -59,7 +58,6 @@
         {% endfor %}
     </div>
 {% endfor %}
-</div>
 
 <section class="newsletter">
     <h2>Join Our News Letter</h2>

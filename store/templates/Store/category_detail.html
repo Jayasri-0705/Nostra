@@ -2,11 +2,10 @@
 
 {% block content %}
 
-<section class="cat-hero">
+<section class="page-head">
+    <a href="{% url 'collections' %}" class="back-link">&larr; All collections</a>
     <h1>{{ category.name }}</h1>
-    {% if category.image_url %}
-        <img src="{{ category.image_url }}" alt="{{ category.name }}">
-    {% endif %}
+    <p>{{ products|length }} item{{ products|length|pluralize }}</p>
 </section>
 
 <div class="product-grid">

@@ -1,4 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+from django.db.models import Q
 from .models import Category, Product
 
 def store(request):
@@ -41,16 +43,25 @@ def category_detail(request, category_id):
 
 
 def collections(request):
-    q = request.GET.get('q', '')
-    groups = []
-    for category in Category.objects.all():
-        products = category.products.all()
-        if q:
-            products = products.filter(name__icontains=q)
-        if products.exists():
-            groups.append({'category': category, 'products': products})
-    return render(request, 'Store/collections.html', {'groups': groups, 'q': q})
+    q = request.GET.get('q', '').strip()
+    selected = request.GET.get('category', '')
 
+    products = Product.objects.select_related('category').order_by('category__name', '-created_at')
+    if q:
+        products = products.filter(
+            Q(name__icontains=q) |
+            Q(category__name__icontains=q) |
+            Q(description__icontains=q)
+        )
+    if selected.isdigit():
+        products = products.filter(category_id=int(selected))
+
+    return render(request, 'Store/collections.html', {
+        'products': products,
+        'categories': Category.objects.all().order_by('name'),
+        'q': q,
+        'selected': selected,
+    })
 
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -62,7 +73,34 @@ def product_detail(request, product_id):
 
 
 def cart(request):
-    return render(request, 'Store/cart.html', {})
+    cart = request.session.get('cart', {})
+    items = []
+    total = 0
+    for product_id, qty in cart.items():
+        product = Product.objects.filter(id=int(product_id)).first()
+        if product:
+            subtotal = product.price * qty
+            total += subtotal
+            items.append({'product': product, 'quantity': qty, 'subtotal': subtotal})
+    return render(request, 'Store/cart.html', {'items': items, 'total': total})
+
+
+@require_POST
+def add_to_cart(request, product_id):
+    get_object_or_404(Product, id=product_id)
+    cart = request.session.get('cart', {})
+    key = str(product_id)
+    cart[key] = cart.get(key, 0) + 1
+    request.session['cart'] = cart
+    return redirect('cart')
+
+
+@require_POST
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', {})
+    cart.pop(str(product_id), None)
+    request.session['cart'] = cart
+    return redirect('cart')
 
 def checkout(request):
     return render(request, 'Store/checkout.html', {})

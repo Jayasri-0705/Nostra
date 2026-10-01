@@ -4,21 +4,26 @@
 
 <form class="search-form" method="get">
     <input type="text" name="q" placeholder="Search" value="{{ q }}">
+    {% if selected %}<input type="hidden" name="category" value="{{ selected }}">{% endif %}
     <button type="submit">🔍</button>
 </form>
 
-{% for group in groups %}
-    <h2 class="category-title">{{ group.category.name }}</h2>
-    <div class="product-grid">
-        {% for product in group.products %}
-            <a href="{% url 'product_detail' product.id %}" class="product-card">
-                <img src="{{ product.image_url }}" alt="{{ product.name }}">
-                <p>{{ product.name }}</p>
-            </a>
-        {% endfor %}
-    </div>
-{% empty %}
-    <p style="padding:20px 40px;">No products found.</p>
-{% endfor %}
+<div class="chips">
+    <a href="{% url 'collections' %}" class="chip {% if not selected %}active{% endif %}">All</a>
+    {% for category in categories %}
+        <a href="?category={{ category.id }}" class="chip {% if selected == category.id|stringformat:'s' %}active{% endif %}">{{ category.name }}</a>
+    {% endfor %}
+</div>
+
+<div class="product-grid">
+    {% for product in products %}
+        <a href="{% url 'product_detail' product.id %}" class="product-card">
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+            <p>{{ product.name }}</p>
+        </a>
+    {% empty %}
+        <p class="empty-note">No products found.</p>
+    {% endfor %}
+</div>
 
 {% endblock content %}

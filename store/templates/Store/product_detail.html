@@ -3,13 +3,26 @@
 {% block content %}
 
 <section class="detail">
-    <img src="{{ product.image_url }}" alt="{{ product.name }}">
+    <div class="detail-photo">
+        <img src="{{ product.image_url }}" alt="{{ product.name }}">
+    </div>
+
     <div class="detail-info">
-        <p class="crumb">{{ product.category }}</p>
+        {% if product.category %}
+            <a href="{% url 'category_detail' product.category.id %}" class="crumb">{{ product.category }}</a>
+        {% endif %}
+
         <h1>{{ product.name }}</h1>
-        <p class="price">₹{{ product.price }}</p>
-        <p>{{ product.description }}</p>
-        <button type="button" class="btn-dark">Add to cart</button>
+        <p class="price">₹{{ product.price|floatformat:"-2" }}</p>
+
+        <hr class="divider">
+
+        <p class="desc">{{ product.description }}</p>
+
+  <form method="post" action="{% url 'add_to_cart' product.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn-cart">Add to cart</button>
+  </form>
     </div>
 </section>
 

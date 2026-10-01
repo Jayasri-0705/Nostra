@@ -1,5 +1,34 @@
 {% extends 'Store/main.html' %}
 
 {% block content %}
+<section class="page cart-page">
     <h2>Your Cart</h2>
+
+    {% for item in items %}
+        <div class="cart-item">
+            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+            <div class="cart-info">
+                <p class="crumb">{{ item.product.category }}</p>
+                <a href="{% url 'product_detail' item.product.id %}"><h3>{{ item.product.name }}</h3></a>
+                <p>₹{{ item.product.price|floatformat:"-2" }} × {{ item.quantity }}</p>
+                <p class="sub">₹{{ item.subtotal|floatformat:"-2" }}</p>
+            </div>
+            <form method="post" action="{% url 'remove_from_cart' item.product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-remove">Remove</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>Your cart is empty.</p>
+        <a href="{% url 'collections' %}" class="btn-shop cart-btn">Continue shopping</a>
+    {% endfor %}
+
+    {% if items %}
+        <div class="cart-total">
+            <span>Total</span>
+            <strong>₹{{ total|floatformat:"-2" }}</strong>
+        </div>
+        <a href="{% url 'checkout' %}" class="btn-shop cart-btn">Checkout</a>
+    {% endif %}
+</section>
 {% endblock content %}
