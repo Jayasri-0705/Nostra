@@ -286,3 +286,32 @@ img { max-width: 100%; }
     .checkout { flex-direction: column; padding: 20px 16px 40px; }
     .summary { width: 100%; }
 }
+
+
+/* Cart icon */
+.cart-link { position: relative; display: inline-flex; align-items: center; }
+.cart-link .cart-badge { position: absolute; top: -8px; right: -12px; }
+.navbar nav a.cart-link:hover { text-decoration: none; }
+
+/* My Orders */
+.orders-page { max-width: 900px; margin: 0 auto; padding: 20px 40px 50px; }
+.order-card { border: 1px solid #e5e5e5; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.order-head {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    background: #f1f4f5; padding: 14px 18px; font-size: 14px;
+}
+.order-head span { color: #666; }
+.order-line {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 18px; border-top: 1px solid #eee;
+}
+.order-line img {
+    flex: none; width: 70px; aspect-ratio: 3 / 4;
+    object-fit: cover; border-radius: 8px;
+}
+.order-line .info { flex: 1; font-size: 14px; }
+.order-line .info h4 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+
+@media (max-width: 768px) {
+    .orders-page { padding: 16px; }
+}

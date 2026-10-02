@@ -133,6 +133,10 @@ def checkout(request):
                     price=item['product'].price,
                     quantity=item['quantity'],
                 )
+            my_orders = request.session.get('my_orders', [])
+            my_orders.append(order.id)
+            request.session['my_orders'] = my_orders
+
             request.session['cart'] = {}
             request.session['last_order'] = order.id
             return redirect('order_success', order_id=order.id)
@@ -145,13 +149,17 @@ def checkout(request):
         'total': total,
     })
 
-
 def order_success(request, order_id):
     if request.session.get('last_order') != order_id:
         return redirect('store')
     order = get_object_or_404(Order, id=order_id)
     return render(request, 'Store/order_success.html', {'order': order})
 
+def my_orders(request):
+    ids = request.session.get('my_orders', [])
+    orders = (Order.objects.filter(id__in=ids)
+              .prefetch_related('items__product')
+              .order_by('-created_at'))
+    return render(request, 'Store/my_orders.html', {'orders': orders})
 
-def contact(request):
-    return render(request, 'Store/contact.html', {})
+

@@ -1,0 +1,33 @@
+{% extends 'Store/main.html' %}
+
+{% block content %}
+<h2 class="cart-title">My Orders</h2>
+
+<section class="orders-page">
+    {% for order in orders %}
+        <div class="order-card">
+            <div class="order-head">
+                <div><span>Order</span> <strong>#{{ order.id }}</strong></div>
+                <div><span>Placed on</span> {{ order.created_at|date:"d M Y, h:i A" }}</div>
+                <div><span>Total</span> <strong>₹{{ order.total|floatformat:"-2" }}</strong></div>
+            </div>
+
+            {% for item in order.items.all %}
+                <div class="order-line">
+                    {% if item.product %}
+                        <img src="{{ item.product.image_url }}" alt="{{ item.name }}">
+                    {% endif %}
+                    <div class="info">
+                        <h4>{{ item.name }}</h4>
+                        <p>₹{{ item.price|floatformat:"-2" }} × {{ item.quantity }}</p>
+                    </div>
+                    <strong>₹{{ item.price|floatformat:"-2" }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        <p>You have no orders yet.</p>
+        <a href="{% url 'collections' %}" class="btn-shop cart-btn">Start shopping</a>
+    {% endfor %}
+</section>
+{% endblock content %}

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=2">
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=3">
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=6">
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=8">
     {% comment %} <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"> {% endcomment %}
 </head>
 <body>
@@ -17,11 +18,18 @@
     <header class="navbar">
         <a href="{% url 'store' %}" class="logo">Nostra</a>
         <nav>
-            <a href="{% url 'store' %}">Home</a>
-            <a href="{% url 'collections' %}">Collections</a>
-            <a href="{% url 'contact' %}">Contact</a>
-            <a href="{% url 'cart' %}">Cart{% if cart_count %} <span class="cart-badge">{{ cart_count }}</span>{% endif %}</a>
-        </nav>
+        <a href="{% url 'store' %}">Home</a>
+        <a href="{% url 'collections' %}">Collections</a>
+        <a href="{% url 'my_orders' %}">My Orders</a>
+        <a href="{% url 'cart' %}" class="cart-link" aria-label="Cart" title="Cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"></path>
+        </svg>
+        {% if cart_count %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+    </a>
+</nav>
     </header>
 
     <main>
