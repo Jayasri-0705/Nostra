@@ -1,0 +1,10 @@
+{% extends 'Store/main.html' %}
+
+{% block content %}
+<section class="page" style="text-align:center; margin: 0 auto;">
+    <h2>Thank you, {{ order.full_name }}!</h2>
+    <p>Your order #{{ order.id }} has been placed.</p>
+    <p>Total: ₹{{ order.total|floatformat:"-2" }}</p>
+    <a href="{% url 'collections' %}" class="btn-shop cart-btn">Continue shopping</a>
+</section>
+{% endblock content %}

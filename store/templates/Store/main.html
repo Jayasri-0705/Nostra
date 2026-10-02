@@ -7,6 +7,9 @@
     <title>{% block title %}Nostra{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'store/css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=3">
+    <link rel="stylesheet" href="{% static 'store/css/style.css' %}?v=6">
     {% comment %} <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet"> {% endcomment %}
 </head>
 <body>
@@ -17,6 +20,7 @@
             <a href="{% url 'store' %}">Home</a>
             <a href="{% url 'collections' %}">Collections</a>
             <a href="{% url 'contact' %}">Contact</a>
+            <a href="{% url 'cart' %}">Cart{% if cart_count %} <span class="cart-badge">{{ cart_count }}</span>{% endif %}</a>
         </nav>
     </header>
 

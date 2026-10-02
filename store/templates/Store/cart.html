@@ -1,18 +1,35 @@
 {% extends 'Store/main.html' %}
 
 {% block content %}
+
+<h2 class="cart-title">Your Cart</h2>
+
 <section class="page cart-page">
-    <h2>Your Cart</h2>
 
     {% for item in items %}
         <div class="cart-item">
             <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}">
+
             <div class="cart-info">
                 <p class="crumb">{{ item.product.category }}</p>
                 <a href="{% url 'product_detail' item.product.id %}"><h3>{{ item.product.name }}</h3></a>
-                <p>₹{{ item.product.price|floatformat:"-2" }} × {{ item.quantity }}</p>
+                <p class="unit">₹{{ item.product.price|floatformat:"-2" }}</p>
+
+                <div class="qty">
+                    <form method="post" action="{% url 'decrease_from_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="qty-btn" aria-label="Decrease">&minus;</button>
+                    </form>
+                    <span class="qty-num">{{ item.quantity }}</span>
+                    <form method="post" action="{% url 'add_to_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="qty-btn" aria-label="Increase">+</button>
+                    </form>
+                </div>
+
                 <p class="sub">₹{{ item.subtotal|floatformat:"-2" }}</p>
             </div>
+
             <form method="post" action="{% url 'remove_from_cart' item.product.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn-remove">Remove</button>

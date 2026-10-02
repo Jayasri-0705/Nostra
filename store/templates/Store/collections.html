@@ -2,8 +2,8 @@
 
 {% block content %}
 
-<form class="search-form" method="get">
-    <input type="text" name="q" placeholder="Search" value="{{ q }}">
+<form class="search-form" method="get" id="search-form">
+    <input type="text" name="q" id="search-input" placeholder="Search" value="{{ q }}" autocomplete="off">
     {% if selected %}<input type="hidden" name="category" value="{{ selected }}">{% endif %}
     <button type="submit">🔍</button>
 </form>
@@ -15,15 +15,44 @@
     {% endfor %}
 </div>
 
-<div class="product-grid">
+<div class="product-grid" id="grid">
     {% for product in products %}
-        <a href="{% url 'product_detail' product.id %}" class="product-card">
+        <a href="{% url 'product_detail' product.id %}" class="product-card"
+           data-search="{{ product.name|lower }} {{ product.category.name|lower }}">
             <img src="{{ product.image_url }}" alt="{{ product.name }}">
             <p>{{ product.name }}</p>
         </a>
-    {% empty %}
-        <p class="empty-note">No products found.</p>
     {% endfor %}
 </div>
+
+<p id="no-results" class="empty-note" style="display:none;">No dresses found.</p>
+
+<script>
+    const input = document.getElementById('search-input');
+    const cards = document.querySelectorAll('#grid .product-card');
+    const none = document.getElementById('no-results');
+
+    function clean(text) {
+        return ' ' + text.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    }
+
+    function filterCards() {
+        const q = clean(input.value);
+        let shown = 0;
+        cards.forEach(function (card) {
+            const match = q.trim() === '' || clean(card.dataset.search).includes(q);
+            card.style.display = match ? '' : 'none';
+            if (match) shown++;
+        });
+        none.style.display = shown === 0 ? 'block' : 'none';
+    }
+
+    input.addEventListener('input', filterCards);
+    document.getElementById('search-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        filterCards();
+    });
+    filterCards();
+</script>
 
 {% endblock content %}

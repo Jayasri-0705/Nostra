@@ -9,7 +9,7 @@
 
     <div class="detail-info">
         {% if product.category %}
-            <a href="{% url 'category_detail' product.category.id %}" class="crumb">{{ product.category }}</a>
+            <a href="{% url 'category_detail' product.category.id %}" class="crumb">&larr; {{ product.category }}</a>
         {% endif %}
 
         <h1>{{ product.name }}</h1>
@@ -19,23 +19,11 @@
 
         <p class="desc">{{ product.description }}</p>
 
-  <form method="post" action="{% url 'add_to_cart' product.id %}">
-    {% csrf_token %}
-    <button type="submit" class="btn-cart">Add to cart</button>
-  </form>
+        <form method="post" action="{% url 'add_to_cart' product.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-cart">Add to cart</button>
+        </form>
     </div>
 </section>
-
-{% if related %}
-    <h2 class="section-title">More in {{ product.category }}</h2>
-    <div class="product-grid">
-        {% for item in related %}
-            <a href="{% url 'product_detail' item.id %}" class="product-card">
-                <img src="{{ item.image_url }}" alt="{{ item.name }}">
-                <p>{{ item.name }}</p>
-            </a>
-        {% endfor %}
-    </div>
-{% endif %}
 
 {% endblock content %}
