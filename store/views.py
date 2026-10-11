@@ -1,4 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 from django.views.decorators.http import require_POST
 from django.db.models import Q
 from .forms import CheckoutForm
@@ -116,6 +119,21 @@ def remove_from_cart(request, product_id):
     return redirect('cart')
 
 
+def signup(request):
+    if request.user.is_authenticated:
+        return redirect('store')
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('store')
+    else:
+        form = UserCreationForm()
+    return render(request, 'Store/signup.html', {'form': form})
+
+
+@login_required
 def checkout(request):
     items, total = get_cart_items(request)
     if not items:
@@ -124,7 +142,7 @@ def checkout(request):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            order = Order.objects.create(total=total, **form.cleaned_data)
+            order = Order.objects.create(user=request.user, total=total, **form.cleaned_data)
             for item in items:
                 OrderItem.objects.create(
                     order=order,
@@ -133,15 +151,12 @@ def checkout(request):
                     price=item['product'].price,
                     quantity=item['quantity'],
                 )
-            my_orders = request.session.get('my_orders', [])
-            my_orders.append(order.id)
-            request.session['my_orders'] = my_orders
-
             request.session['cart'] = {}
-            request.session['last_order'] = order.id
             return redirect('order_success', order_id=order.id)
     else:
-        form = CheckoutForm()
+        form = CheckoutForm(initial={
+            'full_name': request.user.get_full_name() or request.user.username
+        })
 
     return render(request, 'Store/checkout.html', {
         'form': form,
@@ -149,17 +164,17 @@ def checkout(request):
         'total': total,
     })
 
+
+@login_required
 def order_success(request, order_id):
-    if request.session.get('last_order') != order_id:
-        return redirect('store')
-    order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order, id=order_id, user=request.user)
     return render(request, 'Store/order_success.html', {'order': order})
 
+
+@login_required
 def my_orders(request):
-    ids = request.session.get('my_orders', [])
-    orders = (Order.objects.filter(id__in=ids)
+    orders = (Order.objects.filter(user=request.user)
               .prefetch_related('items__product')
               .order_by('-created_at'))
     return render(request, 'Store/my_orders.html', {'orders': orders})
-
 

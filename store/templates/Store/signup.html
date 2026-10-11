@@ -1,0 +1,13 @@
+{% extends 'Store/main.html' %}
+
+{% block content %}
+<section class="auth-box">
+    <h2>Create account</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-cart">Sign up</button>
+    </form>
+    <p class="auth-alt">Already have an account? <a href="{% url 'login' %}"><u>Login</u></a></p>
+</section>
+{% endblock content %}

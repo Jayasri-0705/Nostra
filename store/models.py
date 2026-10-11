@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 class Category(models.Model):
@@ -37,6 +38,10 @@ class Product(models.Model):
         return self.name
 
 class Order(models.Model):
+    user = models.ForeignKey(
+    settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+    null=True, blank=True, related_name='orders'
+    )
     full_name = models.CharField(max_length=150)
     phone = models.CharField(max_length=15)
     address = models.TextField()

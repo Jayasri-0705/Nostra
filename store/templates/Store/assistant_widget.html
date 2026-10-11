@@ -1,0 +1,106 @@
+<button id="ai-toggle" class="ai-toggle" type="button">✨ Ask Nostra</button>
+
+<div id="ai-panel" class="ai-panel" hidden>
+    <div class="ai-head">
+        <strong>Nostra Style Assistant</strong>
+        <button id="ai-close" type="button" aria-label="Close">&times;</button>
+    </div>
+    <div id="ai-log" class="ai-log">
+        <div class="ai-msg bot">Hi! Tell me what you are looking for: an occasion, a budget, or a style.</div>
+    </div>
+    <div class="ai-chips">
+        <button type="button" class="ai-chip">Dress for a wedding under ₹2000</button>
+        <button type="button" class="ai-chip">Casual shirt for men</button>
+        <button type="button" class="ai-chip">Gift for a 5 year old girl</button>
+    </div>
+    <form id="ai-form" class="ai-form">
+        <input id="ai-input" type="text" maxlength="500" placeholder="Ask about fashion..." autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+(function () {
+    var toggle = document.getElementById('ai-toggle');
+    var panel = document.getElementById('ai-panel');
+    var closeBtn = document.getElementById('ai-close');
+    var log = document.getElementById('ai-log');
+    var form = document.getElementById('ai-form');
+    var input = document.getElementById('ai-input');
+    var busy = false;
+
+    function addMessage(text, who) {
+        var div = document.createElement('div');
+        div.className = 'ai-msg ' + who;
+        div.textContent = text;
+        log.appendChild(div);
+        log.scrollTop = log.scrollHeight;
+        return div;
+    }
+
+    function addProducts(products) {
+        if (!products || !products.length) return;
+        var row = document.createElement('div');
+        row.className = 'ai-products';
+        products.forEach(function (p) {
+            var a = document.createElement('a');
+            a.className = 'ai-product';
+            a.href = '/product/' + p.id + '/';
+            var img = document.createElement('img');
+            img.src = p.image_url;
+            img.alt = p.name;
+            var name = document.createElement('span');
+            name.textContent = p.name;
+            var price = document.createElement('strong');
+            price.textContent = '₹' + Number(p.price).toLocaleString('en-IN');
+            a.appendChild(img);
+            a.appendChild(name);
+            a.appendChild(price);
+            row.appendChild(a);
+        });
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    async function send(text) {
+        text = text.trim();
+        if (busy || !text) return;
+        busy = true;
+        addMessage(text, 'user');
+        var waiting = addMessage('Thinking...', 'bot');
+        try {
+            var res = await fetch('/api/assistant/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            var data = {};
+            try { data = await res.json(); } catch (e) {}
+            if (!res.ok) {
+                waiting.textContent = data.detail || 'Sorry, something went wrong. Please try again.';
+            } else {
+                waiting.textContent = data.reply;
+                addProducts(data.products);
+            }
+        } catch (err) {
+            waiting.textContent = 'Sorry, I could not reach the assistant. Please try again.';
+        }
+        busy = false;
+    }
+
+    toggle.addEventListener('click', function () {
+        panel.hidden = !panel.hidden;
+        if (!panel.hidden) input.focus();
+    });
+    closeBtn.addEventListener('click', function () { panel.hidden = true; });
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = input.value;
+        input.value = '';
+        send(text);
+    });
+    document.querySelectorAll('.ai-chip').forEach(function (chip) {
+        chip.addEventListener('click', function () { send(chip.textContent); });
+    });
+})();
+</script>
