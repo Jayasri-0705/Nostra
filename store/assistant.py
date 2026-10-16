@@ -45,7 +45,7 @@ def ask(message):
     products, catalog = build_catalog()
     by_id = {p.id: p for p in products}
 
-    client = genai.Client()
+    client = genai.Client(http_options=types.HttpOptions(timeout=20000))
     response = generate(client,
         model=MODEL,
         contents=message,
@@ -74,11 +74,18 @@ def ask(message):
 
 
 def generate(client, **kwargs):
-    for attempt in range(3):
-        try:
-            return client.models.generate_content(**kwargs)
-        except Exception as e:
-            if getattr(e, 'code', None) in (429, 500, 503) and attempt < 2:
-                time.sleep(3 * (attempt + 1))
-                continue
-            raise
+    primary = kwargs.pop('model')
+    extra = os.environ.get('GEMINI_FALLBACK_MODELS', 'gemini-3.1-flash-lite,gemini-2.5-flash-lite')
+    models = [primary] + [m.strip() for m in extra.split(',') if m.strip()]
+    last = None
+    for model in models:
+        for attempt in range(2):
+            try:
+                return client.models.generate_content(model=model, **kwargs)
+            except Exception as e:
+                last = e
+                if getattr(e, 'code', None) in (429, 500, 503) and attempt == 0:
+                    time.sleep(2)
+                    continue
+                break
+    raise last

@@ -1,0 +1,3 @@
+.btn-cart:disabled { opacity: 0.5; cursor: not-allowed; }
+.error-note { padding: 20px 40px; color: #c0392b; font-size: 14px; }
+.loading-note { padding: 20px 40px; font-size: 14px; color: #777; }

@@ -363,3 +363,76 @@ img { max-width: 100%; }
 .ai-form input { min-width: 0; }
 .ai-form button { flex: none; }
 .ai-chips { max-height: 64px; overflow-y: auto; }
+
+/* ---------- Mobile: side menu + small-screen fixes ---------- */
+.nav-tools, .drawer-close, .nav-overlay { display: none; }
+
+.menu-btn {
+    background: none; border: 0; padding: 6px; cursor: pointer; color: inherit;
+    display: inline-flex; align-items: center;
+}
+
+@media (max-width: 768px) {
+    .navbar { padding: 12px 16px; }
+    .logo { font-size: 24px; }
+
+    /* cart icon + menu button stay in the top bar */
+    .nav-tools { display: flex; align-items: center; gap: 16px; }
+    .navbar .cart-top { display: inline-flex; }
+    .navbar nav .cart-in-nav { display: none; }
+
+    /* the menu slides in from the right */
+    .navbar nav {
+        position: fixed; top: 0; right: 0; bottom: 0;
+        width: min(280px, 82vw);
+        flex-direction: column; align-items: stretch; gap: 0;
+        padding: 56px 0 24px;
+        background: #fff;
+        box-shadow: -8px 0 24px rgba(0,0,0,0.18);
+        font-size: 16px;
+        overflow-y: auto;
+        transform: translateX(105%);
+        visibility: hidden;
+        transition: transform 0.25s ease, visibility 0s linear 0.25s;
+        z-index: 2;
+    }
+    .navbar nav.open {
+        transform: none; visibility: visible;
+        transition: transform 0.25s ease;
+    }
+    .navbar nav a, .navbar nav .nav-btn {
+        display: block; width: 100%; text-align: left;
+        padding: 14px 24px; border-bottom: 1px solid #eee;
+    }
+    .navbar nav a:hover, .navbar nav .nav-btn:hover {
+        text-decoration: none; background: #f6f6f6;
+    }
+    .logout-form { display: block; }
+    .drawer-close {
+        display: block; position: absolute; top: 8px; right: 12px;
+        background: none; border: 0; font-size: 30px; line-height: 1; cursor: pointer;
+    }
+    .nav-overlay {
+        display: block; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.45); z-index: 1;
+    }
+    .nav-overlay[hidden] { display: none; }
+    body.menu-open { overflow: hidden; }
+    body.menu-open .ai-toggle, body.menu-open .ai-panel { display: none; }
+
+    /* spacing on small screens */
+    .features-head, .features, .section-title, .newsletter {
+        padding-left: 16px; padding-right: 16px;
+    }
+    .section-title { font-size: 20px; }
+    .search-form { margin: 16px; }
+    .footer { padding: 24px 16px; }
+    .auth-box { margin: 24px auto; }
+
+    /* inputs at 16px so phones do not zoom in */
+    input, textarea, select { font-size: 16px !important; }
+
+    /* chat box fits the phone */
+    .ai-toggle { right: 12px; bottom: 12px; }
+    .ai-panel { right: 12px; bottom: 68px; width: calc(100vw - 24px); }
+}
