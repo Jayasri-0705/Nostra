@@ -67,13 +67,6 @@ export default function Home() {
           })}
         </div>
       ))}
-
-      <section className="newsletter">
-        <h2>Join Our News Letter</h2>
-        <p>Signup for our email newsletter to get exclusive discounts and updates and more</p>
-        <input type="email" placeholder="Enter your email" />
-        <button type="button">Subscribe</button>
-      </section>
     </>
   )
 }
