@@ -4,12 +4,16 @@ import ErrorList from '../components/ErrorList.jsx'
 import { errorMap, getJSON, postJSON, rupees } from '../api.js'
 import { useShop } from '../shop.jsx'
 
+// Online payment is switched on in the next step (needs Razorpay keys)
+const ONLINE_READY = false
+
 export default function Checkout() {
   const { user, setCartCount } = useShop()
   const navigate = useNavigate()
   const [cart, setCart] = useState(null)
   const [errors, setErrors] = useState({})
   const [saving, setSaving] = useState(false)
+  const [method, setMethod] = useState('cod')
   const [form, setForm] = useState({
     full_name: user ? user.username : '',
     phone: '',
@@ -29,7 +33,7 @@ export default function Checkout() {
     setSaving(true)
     setErrors({})
     try {
-      const data = await postJSON('/api/checkout/', form)
+      const data = await postJSON('/api/checkout/', { ...form, payment_method: method })
       setCartCount(0)
       navigate('/order/success/' + data.order_id)
     } catch (err) {
@@ -74,6 +78,19 @@ export default function Checkout() {
             <label htmlFor="pincode">Pincode:</label>
             <input id="pincode" type="text" maxLength={10} value={form.pincode} onChange={set('pincode')} required />
           </p>
+
+          <fieldset className="pay-options">
+            <legend>Payment</legend>
+            <label className="pay-option">
+              <input type="radio" name="payment_method" value="cod" checked={method === 'cod'} onChange={() => setMethod('cod')} />
+              Cash on delivery
+            </label>
+            <label className={'pay-option' + (ONLINE_READY ? '' : ' disabled')}>
+              <input type="radio" name="payment_method" value="online" checked={method === 'online'} disabled={!ONLINE_READY} onChange={() => setMethod('online')} />
+              Pay online (card, UPI, net banking)
+              {!ONLINE_READY && <span className="pay-note">coming soon</span>}
+            </label>
+          </fieldset>
 
           <button type="submit" className="btn-cart" disabled={saving}>Place order</button>
         </form>

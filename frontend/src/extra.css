@@ -1,3 +1,12 @@
 .btn-cart:disabled { opacity: 0.5; cursor: not-allowed; }
 .error-note { padding: 20px 40px; color: #c0392b; font-size: 14px; }
 .loading-note { padding: 20px 40px; font-size: 14px; color: #777; }
+
+/* payment choice at checkout */
+.pay-options { border: 1px solid #ccc; border-radius: 6px; padding: 8px 14px 6px; margin-bottom: 14px; }
+.pay-options legend { font-size: 13px; color: #555; padding: 0 6px; }
+.pay-option { display: flex; flex-direction: row; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: #111; cursor: pointer; }
+.pay-option input { width: auto; padding: 0; border: 0; margin: 0; }
+.pay-option.disabled { color: #999; cursor: not-allowed; }
+.pay-note { font-size: 12px; color: #777; }
+.pay-line { font-size: 14px; color: #444; margin: 6px 0 0; }

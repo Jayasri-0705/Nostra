@@ -45,3 +45,11 @@ export function rupees(value) {
   const n = Number(value)
   return '₹' + (Number.isInteger(n) ? n : n.toFixed(2))
 }
+
+// Short text that says how an order is paid
+export function paymentText(order) {
+  const { payment_method: method, payment_status: status } = order
+  if (status === 'failed') return 'Payment failed'
+  if (method === 'online') return status === 'paid' ? 'Paid online' : 'Online payment pending'
+  return status === 'paid' ? 'Cash on delivery · Paid' : 'Cash on delivery · Pay on arrival'
+}

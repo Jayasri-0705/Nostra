@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getJSON, rupees } from '../api.js'
+import { getJSON, paymentText, rupees } from '../api.js'
 
 export default function OrderSuccess() {
   const { id } = useParams()
@@ -19,6 +19,7 @@ export default function OrderSuccess() {
       <h2>Thank you, {order.full_name}!</h2>
       <p>Your order #{order.id} has been placed.</p>
       <p>Total: {rupees(order.total)}</p>
+      <p>Payment: {paymentText(order)}</p>
       <Link to="/collections" className="btn-shop cart-btn">Continue shopping</Link>
     </section>
   )

@@ -17,5 +17,14 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'full_name', 'phone', 'total', 'created_at')
+    list_display = ('id', 'user', 'full_name', 'phone', 'total',
+                    'payment_method', 'payment_status', 'created_at')
+    list_filter = ('payment_method', 'payment_status')
+    search_fields = ('=id', 'full_name', 'phone', 'razorpay_order_id', 'razorpay_payment_id')
+    readonly_fields = ('razorpay_order_id', 'razorpay_payment_id')
     inlines = [OrderItemInline]
+    actions = ['mark_paid']
+
+    @admin.action(description='Mark selected orders as Paid')
+    def mark_paid(self, request, queryset):
+        queryset.update(payment_status='paid')

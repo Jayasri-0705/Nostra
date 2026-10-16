@@ -50,6 +50,13 @@ class Order(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    PAYMENT_METHODS = [('cod', 'Cash on delivery'), ('online', 'Online (Razorpay)')]
+    PAYMENT_STATUSES = [('pending', 'Pending'), ('paid', 'Paid'), ('failed', 'Failed')]
+    payment_method = models.CharField(max_length=10, choices=PAYMENT_METHODS, default='cod')
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUSES, default='pending')
+    razorpay_order_id = models.CharField(max_length=100, blank=True)
+    razorpay_payment_id = models.CharField(max_length=100, blank=True)
+
     def __str__(self):
         return f"Order #{self.id} - {self.full_name}"
 

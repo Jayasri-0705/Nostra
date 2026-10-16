@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getJSON, rupees } from '../api.js'
+import { getJSON, paymentText, rupees } from '../api.js'
 
 function formatDate(iso) {
   return new Date(iso)
@@ -38,6 +38,7 @@ export default function MyOrders() {
               <div><span>Order</span> <strong>#{order.id}</strong></div>
               <div><span>Placed on</span> {formatDate(order.created_at)}</div>
               <div><span>Total</span> <strong>{rupees(order.total)}</strong></div>
+              <div><span>Payment</span> {paymentText(order)}</div>
             </div>
 
             {order.items.map((item, i) => (

@@ -133,6 +133,8 @@ def order_payload(order):
     return {
         'id': order.id,
         'full_name': order.full_name,
+        'payment_method': order.payment_method,
+        'payment_status': order.payment_status,
         'total': float(order.total),
         'created_at': order.created_at.isoformat(),
         'items': [
@@ -219,11 +221,18 @@ def api_checkout(request):
     items, total = get_cart_items(request)
     if not items:
         return Response({'detail': 'Your cart is empty.'}, status=400)
+    method = request.data.get('payment_method', 'cod')
+    if method != 'cod':
+        return Response({'detail': 'Online payment is not available yet.'}, status=400)
     form = CheckoutForm(request.data)
     if not form.is_valid():
         return Response({'errors': form_errors(form)}, status=400)
     with transaction.atomic():
-        order = Order.objects.create(user=request.user, total=total, **form.cleaned_data)
+        order = Order.objects.create(
+            user=request.user, total=total,
+            payment_method='cod', payment_status='pending',
+            **form.cleaned_data,
+        )
         for item in items:
             OrderItem.objects.create(
                 order=order,
