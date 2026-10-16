@@ -1,6 +1,5 @@
 venv/
 db.sqlite3
-media/
 .env
 .env
 
@@ -15,6 +14,6 @@ frontend/node_modules/
 venv/
 env/
 .venv/
-media/
 frontend/node_modules/
 frontend/dist/
+store_data.json
